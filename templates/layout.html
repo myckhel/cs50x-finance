@@ -12,6 +12,16 @@
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" rel="stylesheet"/>
 
         <link href="/static/styles.css" rel="stylesheet"/>
+        <!-- Material Design Bootstrap -->
+        <link href="{{url_for('static', filename='css/mdb.min.css')}}" rel="stylesheet">
+        <!-- Your custom styles (optional) -->
+        <link href="{{url_for('static', filename='css/style.css')}}" rel="stylesheet">
+
+        <link href="{{url_for('static', filename='bootstrap.css')}}" rel="stylesheet"/>
+        <!-- font-awesome-icons -->
+        <link href="{{url_for('static', filename='font-awesome.css')}}" rel="stylesheet">
+        <!-- <link rel="icon" href="../../favicon.ico"> -->
+
 
         <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
@@ -59,7 +69,15 @@
         <main class="container p-5">
             {% block main %}{% endblock %}
         </main>
-        
+
+        <!-- Offline Lib -->
+        <script type="text/javascript" src="{{url_for('static', filename='js/jquery-3.3.1.min.js')}}"></script>
+        <script type="text/javascript" src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
+        <!-- Bootstrap tooltips -->
+        <script type="text/javascript" src="{{url_for('static', filename='js/popper.min.js')}}"></script>
+        <!-- MDB core JavaScript -->
+        <script type="text/javascript" src="{{url_for('static', filename='js/mdb.min.js')}}"></script>
+
     </body>
 
 </html>
