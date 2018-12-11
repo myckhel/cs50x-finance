@@ -10,8 +10,8 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from helpers import apology, login_required, lookup, usd
 
 # Ensure environment variable is set
-if not os.environ.get("API_KEY"):
-    raise RuntimeError("API_KEY not set")
+# if not os.environ.get("API_KEY"):
+#     raise RuntimeError("API_KEY not set")
 
 # Configure application
 app = Flask(__name__)
@@ -118,8 +118,37 @@ def quote():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
-    """Register user"""
-    return apology("TODO")
+    if request.method == 'POST':
+        """Register user"""
+        fname = request.form.get('fname')
+        lname = request.form.get('lname')
+        uname = request.form.get('username')
+        email = request.form.get('email')
+        password = generate_password_hash(request.form.get('password'))
+        status = True
+        # check unique email
+        exists_mail = db.execute("SELECT email FROM users where email = :email", email = email)
+        if exists_mail:
+            status = False
+            text = "Email exists with another user"
+        # check unique username
+        exists_username= db.execute("SELECT username FROM users where username = :username", username = uname)
+        if exists_username:
+            status = False
+            text = "Username already taken by another user"
+        if status:
+            # register
+            register = db.execute("INSERT INTO users (firstname, lastname, username, email, hash) VALUES(:firstname, :lastname, :username, :email, :hash)",
+            firstname = fname, lastname = lname, username = uname, email = email, hash = password)
+            text = "Registration Was Successful"
+            # Remember which user has logged in
+            session["user_id"] = rows[0]["id"]
+
+            # Redirect user to home page
+            return redirect("/")
+        return render_template('register.html', status = status, text = text)#apology("TODO")
+    else:
+        return render_template('register.html')#apology("TODO")
 
 
 @app.route("/sell", methods=["GET", "POST"])

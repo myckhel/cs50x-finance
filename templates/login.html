@@ -5,13 +5,76 @@
 {% endblock %}
 
 {% block main %}
-    <form action="/login" method="post">
-        <div class="form-group">
-            <input autocomplete="off" autofocus class="form-control" name="username" placeholder="Username" type="text"/>
-        </div>
-        <div class="form-group">
-            <input class="form-control" name="password" placeholder="Password" type="password"/>
-        </div>
-        <button class="btn btn-primary" type="submit">Log In</button>
+    <div class="page-body">
+    <div class="row">
+    <div class="col-sm-12">
+
+    <div class="card">
+    <div class="card-header">
+    <h5>Login From Here</h5>
+    <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit</span>
+    <div class="card-header-right">
+    <i class="icofont icofont-rounded-down"></i>
+    <i class="icofont icofont-refresh"></i>
+    <i class="icofont icofont-close-circled"></i>
+    </div>
+    </div>
+    <div class="card-block">
+    <div class="j-wrapper j-wrapper-400">
+    <form action="{{url_for('login')}}" method="post" class="j-pro" id="j-pro" novalidate="">
+
+    <div class="j-content">
+
+    <div class="j-unit">
+    <div class="j-input">
+    <label class="j-icon-right" for="login">
+    <i class="icofont icofont-ui-user"></i>
+     </label>
+     <div class="form-group">
+         <input autocomplete="off" autofocus class="form-control" name="username" placeholder="Username" type="text"/>
+     </div>
+    </div>
+    </div>
+
+    <input id="action" value="login" name="action" type="hidden">
+
+    <div class="j-unit">
+    <div class="j-input">
+    <label class="j-icon-right" for="password">
+    <i class="icofont icofont-lock"></i>
+    </label>
+    <div class="form-group">
+        <input class="form-control" name="password" placeholder="Password" type="password"/>
+    </div>
+    <span class="j-hint">
+    <a href="#" class="j-link">Forgot password?</a>
+    </span>
+    </div>
+    </div>
+
+
+    <div class="j-unit">
+
+    <div class="g-recaptcha" data-sitekey="6LeV7gwUAAAAAKOX-B12lNcg1ids8dFylMP6XihO"></div>
+
+
+    </div>
+
+
+    <div class="j-response"></div>
+
+    </div>
+
+    <div class="j-footer">
+      <button class="btn btn-primary" type="submit">Log In</button>
+    </div>
+
     </form>
+    </div>
+    </div>
+    </div>
+
+    </div>
+    </div>
+    </div>
 {% endblock %}
