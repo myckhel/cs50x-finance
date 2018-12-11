@@ -72,7 +72,7 @@ def lookup(symbol):
         # Return stock's name (as a str), price (as a float), and (uppercased) symbol (as a str)
         return {
             "price": price,
-            "symbol": symbol.upper()
+            "symbol": symbol.upper(),
         }
 
     except:

@@ -1,7 +1,7 @@
 import os
 
 from cs50 import SQL
-from flask import Flask, flash, redirect, render_template, request, session
+from flask import Flask, flash, redirect, render_template, request, session, jsonify
 from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions
@@ -112,8 +112,13 @@ def logout():
 @app.route("/quote", methods=["GET", "POST"])
 @login_required
 def quote():
+    if request.method == 'POST':
+        symbol = request.form.get('symbol')
+        quote = lookup(symbol)
+        return render_template('quoted.html', quote = quote)
+
     """Get stock quote."""
-    return apology("TODO")
+    return render_template("quote.html")
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -164,5 +169,5 @@ def errorhandler(e):
 
 
 # listen for errors
-for code in default_exceptions:
-    app.errorhandler(code)(errorhandler)
+# for code in default_exceptions:
+#     app.errorhandler(code)(errorhandler)

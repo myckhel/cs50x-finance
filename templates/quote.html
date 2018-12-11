@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Quote
+{% endblock %}
+
+{% block main %}
+<style media="screen">
+
+</style>
+<div class="row" >
+  <div id="quote-div" class="col-md-6 col-md-offset-3 border border-danger bg-warning" align="center">
+    <div class="page-header well well-sm">
+      <h1>Look Up Stock</h1>
+    </div>
+    <form id="lookup" action="" method="POST">
+      <div class="form-group" >
+        <div class="input-group">
+          <input required name="symbol" type="text" placeholder="Enter quote symbol" class="form-control" />
+          <input id="find" type="submit" value="Look up"  class="btn btn-primary form-control"/>
+        </div>
+      </div>
+    </form>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+  $(document).ready(() => {
+    $('#lookups').submit((e) => {
+      toggleAble( '#find' , true , 'fetching quote')
+      e.preventDefault()
+      url = "{{url_for('quote')}}"
+      data = $('#lookup').serializeArray()
+      $.ajax({data, type: 'POST', url})
+      .done((res) => {
+        if(res.status){
+          displayQuote(res.quote)
+        } else {
+          alert('not ok')
+        }
+        toggleAble($('#find'), false)
+      })
+      .fail((e) => {
+        toggleAble($('#find'), false)
+      })
+    })
+  })
+
+</script>
+{% endblock %}

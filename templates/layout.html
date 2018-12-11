@@ -22,6 +22,7 @@
         <link href="{{url_for('static', filename='css/font-awesome.css')}}" rel="stylesheet">
         <!-- <link rel="icon" href="../../favicon.ico"> -->
         <link href="{{url_for('static', filename='css/icofont.css')}}" rel="stylesheet">
+        {% block link %}{% endblock %}
 
 
         <!-- <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script> -->
@@ -34,7 +35,7 @@
 
     <body>
 
-        <nav class="navbar navbar-expand-md navbar-light bg-light border">
+        <nav class="navbar navbar-expand-md navbar-light bg-dark border">
             <a class="navbar-brand" href="/">
               <span class="blue">C</span>
               <span class="red">$</span>
@@ -84,7 +85,9 @@
         <script type="text/javascript" src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
         <!-- Bootstrap tooltips -->
         <script type="text/javascript" src="{{url_for('static', filename='js/popper.min.js')}}"></script>
+        <script type="text/javascript" src="{{url_for('static', filename='js/script.js')}}"></script>
         <!-- MDB core JavaScript -->
+        {% block js %}{% endblock %}
     </body>
 
 </html>
