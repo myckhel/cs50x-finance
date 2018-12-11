@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Quoted
+{% endblock %}
+
+{% block main %}
+<div class="row" >
+  <div id="quote-view" class="container">
+
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+  $(document).ready(() => {
+    displayQuote("{{quote.price}}", "{{quote.symbol}}")
+  })
+  const displayQuote = (price, symbol) => {
+    template = quoteTemplate(price, symbol)
+    $('#quote-view').html(template)
+  }
+  const quoteTemplate = (price, symbol) => (
+  `
+  <div class="well">
+    Price: ${price} - Symbol: ${symbol}
+  </div>
+  `
+  )
+</script>
+{% endblock %}
