@@ -1,5 +1,4 @@
 import os
-
 from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session, jsonify
 from flask_session import Session
@@ -8,10 +7,6 @@ from werkzeug.exceptions import default_exceptions
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from helpers import apology, login_required, lookup, usd
-
-# Ensure environment variable is set
-# if not os.environ.get("API_KEY"):
-#     raise RuntimeError("API_KEY not set")
 
 # Configure application
 app = Flask(__name__)
@@ -39,19 +34,56 @@ Session(app)
 # Configure CS50 Library to use SQLite database
 db = SQL("sqlite:///finance.db")
 
-
 @app.route("/")
 @login_required
 def index():
     """Show portfolio of stocks"""
-    return apology("TODO")
+    user_id = session['user_id']
+    data = {
+        'balance': db.execute("SELECT cash FROM users where id = :user_id", user_id = user_id)[0]['cash'],
+        'stocks' : db.execute("SELECT stock, shares, price FROM transactions where user_id = :user_id", user_id = user_id),
+    }
 
+    return render_template("index.html", data = data)
 
 @app.route("/buy", methods=["GET", "POST"])
 @login_required
 def buy():
+    if request.method == 'POST':
+        result = {
+            'status' : False,
+        }
+        symbol = request.form.get('symbol')
+        shares = int(request.form.get('shares'))
+
+        # validate input
+        if not (shares and symbol) or shares < 1:
+            result['reason'] = "You must provide Shares & Symbol or Shares must be potive"
+            return render_template("buy.html", result = result)
+
+        quote = lookup(symbol)
+        user_id = session["user_id"]
+        if quote:
+            # get user balance
+            balance = db.execute("SELECT cash FROM users where id = :user_id", user_id = user_id)[0]['cash']
+            amount = quote['price'] * int(shares)
+            if amount > balance:
+                result['reason'] = "Insufficient funds to buy stock(s)"
+            else:
+                newBalance = balance - amount
+                db.execute("UPDATE users SET cash = :newBalance where id = :user_id", user_id = user_id, newBalance = newBalance)
+                # add to users portfolio
+                date = "2019-03-21"
+                db.execute("INSERT INTO transactions (user_id, stock, price, shares, date) VALUES (:user_id, :symbol, :amount, :shares, :date)"
+                , amount = amount, symbol = symbol, date = date, user_id = user_id, shares = shares)
+                # result = { 'status' : True, 'reason' : "Stock bought successfully" }
+                return redirect("/")
+        else:
+            result['reason'] = "Stock not found"
+        return render_template("buy.html", result = result)
+
     """Buy shares of stock"""
-    return apology("TODO")
+    return render_template("buy.html")
 
 
 @app.route("/history")

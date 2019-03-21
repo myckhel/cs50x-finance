@@ -17,7 +17,7 @@
         <!-- Your custom styles (optional) -->
         <link href="{{url_for('static', filename='css/style.css')}}" rel="stylesheet">
 
-        <link href="{{url_for('static', filename='css/bootstrap.css')}}" rel="stylesheet"/>
+        <link href="{{url_for('static', filename='css/bootstrap.min.css')}}" rel="stylesheet"/>
         <!-- font-awesome-icons -->
         <link href="{{url_for('static', filename='css/font-awesome.css')}}" rel="stylesheet">
         <!-- <link rel="icon" href="../../favicon.ico"> -->
@@ -81,10 +81,10 @@
         </main>
 
         <!-- Offline Lib -->
+        <script type="text/javascript" src="{{url_for('static', filename='js/popper.min.js')}}"></script>
         <script type="text/javascript" src="{{url_for('static', filename='js/jquery-3.3.1.min.js')}}"></script>
         <script type="text/javascript" src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
         <!-- Bootstrap tooltips -->
-        <script type="text/javascript" src="{{url_for('static', filename='js/popper.min.js')}}"></script>
         <script type="text/javascript" src="{{url_for('static', filename='js/script.js')}}"></script>
         <!-- MDB core JavaScript -->
         {% block js %}{% endblock %}

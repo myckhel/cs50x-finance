@@ -1,0 +1,74 @@
+{% extends "layout.html" %}
+
+{% block title %} Home {% endblock %}
+
+{% block main %}
+<link href="{{url_for('static', filename='css/addons/datatables.min.css')}}" rel="stylesheet"/>
+<div class="row">
+  {% if status: %}
+  <div class="col-12">
+    <div class="card bg-warning">
+      <!-- {{result['status']}}  -->
+      {{status['reason']}}
+    </div>
+  </div>
+  {% endif %}
+  <div class="col">
+    <div class="row">
+      <div class="col-2 card bg-primary" id="balance"></div>
+      <div class="col-2 card bg-info pull-right" id="Tbalance"></div>
+    </div>
+  </div>
+  <div class="col-12">
+    <div class="title">
+      <h3>User Stock(s)</h3>
+    </div>
+    <div class="table-responsive">
+      <table id="stocks" class="table table-hover table-bordered nowrap">
+        <thead class="bg-dark">
+          <tr>
+            <th><i class="icofont icofont-chart-flow-alt-2"></i></th>
+            <th><i class="icofont icofont-coins"></i> Symbol</th>
+            <th><i class="icofont icofont-deal"></i> Shares</th>
+            <th><i class="icofont icofont-money-bag"></i> Price per</th>
+            <th><i class="icofont icofont-money-bag"></i> Total Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for stock in data['stocks']: %}
+          <tr>
+            <td>1</td>
+            <td>{{stock.stock}}</td>
+            <td>{{stock.shares}}</td>
+            <td>{{stock.price / stock.shares}}</td>
+            <td>{{stock.price}}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+        <!-- <tfoot class="bg-info">
+          <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>200</td>
+            <td>200</td>
+          </tr>
+        </tfoot> -->
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript" src="{{url_for('static', filename='js/addons/datatables.min.js')}}"></script>
+<script type="text/javascript">
+  $(document).ready(() => {
+    const balance = (balance, txt) => (`<h3>${txt}: <span class='text-warning'>${balance}</span></h3>`)
+    $('#balance').html(balance("{{data['balance']}}", '<i class="icofont icofont-bank-alt"></i>'))
+    $('#Tbalance').html(balance("{{data['balance']}}", '<i class="icofont icofont-money-bag"></i> '))
+
+    var stocks = $('#stocks').DataTable()
+  })
+</script>
+{% endblock %}

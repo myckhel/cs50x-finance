@@ -5,9 +5,44 @@
 {% endblock %}
 
 {% block main %}
+<div class="row">
+  {% if result: %}
+  <div class="col-12">
+    <div class="card bg-warning">
+      <!-- {{result['status']}}  -->
+      {{result['reason']}}
+    </div>
+  </div>
+  {% endif %}
 
+  <div class="col">
+    <div class="panel  bg-primary ht-min">
+      <div class="panel-title">
+        <!-- <h3>Buy Stock(s)</h3> -->
+      </div>
+      <div class="panel-body">
+        <form id="buy-form" class="to-center" action="" method="post">
+          <div class="form-group">
+            <h3>Buy Stock(s)</h3>
+            <div class="input-inline">
+              <input type="text" name="symbol" value="" placeholder="Enter Stock Symbol" required>
+              <input type="number" name="shares" min="1" value="" placeholder="Number of Shares" required>
+              <button class="btn btn-success" type="submit" name="buy"><i class="icofont icofont-deal"></i> Buy</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
 
 {% block js %}
-
+<script type="text/javascript">
+$(document).ready(() => {
+  // $('#buy-form').submit((e) =>{
+  //   $(`${e} `)
+  // })
+})
+</script>
 {% endblock %}
