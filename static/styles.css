@@ -46,6 +46,10 @@ main img
     max-width: 100%;
 }
 
+.nav-link {
+  color: white;
+}
+
 .ht-min {
   min-height: 300px;
 }

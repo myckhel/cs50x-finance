@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+
+{% block title %} History {% endblock %}
+
+{% block main %}
+<div class="row">
+  <div class="col-12">
+    <div class="title">
+      <h3>Transactions History</h3>
+    </div>
+    <div class="table-responsive">
+      <table id="stocks" class="table table-hover table-striped table-bordered nowrap">
+        <thead class="bg-dark">
+          <tr>
+            <th><i class="icofont icofont-chart-flow-alt-2"></i></th>
+            <th><i class="icofont icofont-coins"></i> Symbol</th>
+            <th><i class="icofont icofont-deal"></i> Shares</th>
+            <th><i class="icofont icofont-money-bag"></i> Current Price</th>
+            <th><i class="icofont icofont-money-bag"></i> Bought Price</th>
+            <th><i class="icofont icofont-deal"></i> Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for stock in data['stocks']: %}
+          <tr>
+            <td>1</td>
+            <td>{{stock.stock}}</td>
+            <td>{{stock.shares}}</td>
+            <td>{{stock.curPrice}}</td>
+            <td>{{stock.price}}</td>
+            <td class="text-warning">{{stock.type}}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript" src="{{url_for('static', filename='js/addons/datatables.min.js')}}"></script>
+<script type="text/javascript">
+$(document).ready(() => {
+  var stocks = $('#stocks').DataTable()
+})
+</script>
+{% endblock %}

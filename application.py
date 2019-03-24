@@ -1,12 +1,12 @@
 import os
-from cs50 import SQL
+# from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session, jsonify
 from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from helpers import apology, login_required, lookup, usd
+from helpers import * #apology, login_required, lookup, usd
 
 # Configure application
 app = Flask(__name__)
@@ -32,17 +32,13 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 # Configure CS50 Library to use SQLite database
-db = SQL("sqlite:///finance.db")
+# db = SQL("sqlite:///finance.db")
 
 @app.route("/")
 @login_required
 def index():
     """Show portfolio of stocks"""
-    user_id = session['user_id']
-    data = {
-        'balance': db.execute("SELECT cash FROM users where id = :user_id", user_id = user_id)[0]['cash'],
-        'stocks' : db.execute("SELECT stock, shares, price FROM transactions where user_id = :user_id", user_id = user_id),
-    }
+    data = getStocks()
 
     return render_template("index.html", data = data)
 
@@ -50,15 +46,13 @@ def index():
 @login_required
 def buy():
     if request.method == 'POST':
-        result = {
-            'status' : False,
-        }
+        result = { 'status' : False }
         symbol = request.form.get('symbol')
         shares = int(request.form.get('shares'))
 
         # validate input
-        if not (shares and symbol) or shares < 1:
-            result['reason'] = "You must provide Shares & Symbol or Shares must be potive"
+        if not validate(symbol, shares):
+            result['reason'] = "You must provide Shares & Symbol or Shares must be positive"
             return render_template("buy.html", result = result)
 
         quote = lookup(symbol)
@@ -70,12 +64,11 @@ def buy():
             if amount > balance:
                 result['reason'] = "Insufficient funds to buy stock(s)"
             else:
-                newBalance = balance - amount
-                db.execute("UPDATE users SET cash = :newBalance where id = :user_id", user_id = user_id, newBalance = newBalance)
                 # add to users portfolio
-                date = "2019-03-21"
-                db.execute("INSERT INTO transactions (user_id, stock, price, shares, date) VALUES (:user_id, :symbol, :amount, :shares, :date)"
-                , amount = amount, symbol = symbol, date = date, user_id = user_id, shares = shares)
+                modStock(symbol, shares)
+                # add to transactions
+                storeTxn(amount, symbol, shares, 'bought')
+                updateCash(-amount)
                 # result = { 'status' : True, 'reason' : "Stock bought successfully" }
                 return redirect("/")
         else:
@@ -86,11 +79,46 @@ def buy():
     return render_template("buy.html")
 
 
+@app.route("/sell", methods=["GET", "POST"])
+@login_required
+def sell():
+    """Sell shares of stock"""
+    data = getStocks()
+    if request.method == 'POST':
+        user_id = session['user_id']
+        result = { 'status' : False }
+        symbol = request.form.get('symbol')
+        shares = int(request.form.get('shares'))
+        # validate input
+        if not validate(symbol, shares):
+            result['reason'] = "You must provide Shares & Symbol or Shares must be potive"
+            return render_template("sell.html", result = result, data = data)
+        # check if user can sell
+        ownedShares = db.execute("SELECT SUM(shares) as shares FROM users_stocks WHERE shares > 0 AND user_id = :user_id AND stock = :symbol GROUP BY stock", user_id = user_id, symbol = symbol)
+        if not ownedShares:
+            result['reason'] = "You do not own the selected stock"
+            return render_template("sell.html", result = result, data = data)
+        elif not ownedShares[0]['shares'] >= shares:
+            result['reason'] = "You do not have enough shares of the selected stock"
+            return render_template("sell.html", result = result, data = data)
+        else:
+            # remove stocks from users portfolio
+            quote = lookup(symbol)
+            amount = quote['price'] * shares
+            modStock(symbol, -shares)
+            # update user cash
+            storeTxn(amount, symbol, shares, 'sold')
+            updateCash(amount)
+    data = getStocks()
+    return render_template("sell.html", data = data)
+
+
 @app.route("/history")
 @login_required
 def history():
     """Show history of transactions"""
-    return apology("TODO")
+    data = getStocks()
+    return render_template("history.html", data = data)
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -183,17 +211,9 @@ def register():
 
             # Redirect user to home page
             return redirect("/")
-        return render_template('register.html', status = status, text = text)#apology("TODO")
+        return render_template('register.html', status = status, text = text)
     else:
-        return render_template('register.html')#apology("TODO")
-
-
-@app.route("/sell", methods=["GET", "POST"])
-@login_required
-def sell():
-    """Sell shares of stock"""
-    return apology("TODO")
-
+        return render_template('register.html')
 
 def errorhandler(e):
     """Handle error"""

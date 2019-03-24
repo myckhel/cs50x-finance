@@ -1,0 +1,86 @@
+{% extends "layout.html" %}
+
+{% block title %} Sell {% endblock %}
+
+{% block main %}
+<div class="row">
+  {% if result: %}
+  <div class="col-12">
+    <div class="card bg-warning">
+      <!-- {{result['status']}}  -->
+      {{result['reason']}}
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="col-6">
+    <div class="row">
+      <div class="col-4 card bg-primary" id="balance"></div>
+      <div class="col-4 card bg-info pull-right" id="Tbalance"></div>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="panel bg-primary">
+      <div class="panel-title">
+        <!-- <h3>Buy Stock(s)</h3> -->
+      </div>
+      <div class="panel-body">
+        <form id="buy-form" class="" action="" method="post">
+          <div class="form-group">
+            <h3>Sell Stock(s)</h3>
+            <div class="input-inline">
+              <input type="text" name="symbol" value="" placeholder="Enter Stock Symbol" required>
+              <input type="number" name="shares" min="1" value="" placeholder="Number of Shares" required>
+              <button class="btn btn-success" type="submit" name="sell"><i class="icofont icofont-deal"></i> Sell</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12">
+    <div class="title">
+      <h3>User Stock(s)</h3>
+    </div>
+    <div class="table-responsive">
+      <table id="stocks" class="table table-hover table-bordered nowrap">
+        <thead class="bg-dark">
+          <tr>
+            <th><i class="icofont icofont-chart-flow-alt-2"></i></th>
+            <th><i class="icofont icofont-coins"></i> Symbol</th>
+            <th><i class="icofont icofont-deal"></i> Shares</th>
+            <th><i class="icofont icofont-money-bag"></i> Current Price</th>
+            <th><i class="icofont icofont-money-bag"></i> Total Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for stock in data['owned']: %}
+          <tr>
+            <td>1</td>
+            <td>{{stock.stock}}</td>
+            <td>{{stock.shares}}</td>
+            <td>{{stock.curPrice}}</td>
+            <td class="text-warning">{{stock.curPrice * stock.shares}}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript" src="{{url_for('static', filename='js/addons/datatables.min.js')}}"></script>
+<script type="text/javascript">
+$(document).ready(() => {
+  const balance = (balance, txt) => (`<h3>${txt}: <span class='text-warning'>${balance}</span></h3>`)
+  $('#balance').html(balance("{{data['balance']}}", '<i class="icofont icofont-bank-alt"></i>'))
+  $('#Tbalance').html(balance("{{data['stockBalance'] + data['balance']}}", '<i class="icofont icofont-money-bag"></i> '))
+
+  var stocks = $('#stocks').DataTable()
+})
+</script>
+{% endblock %}

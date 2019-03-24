@@ -15,11 +15,11 @@
         <!-- Material Design Bootstrap -->
         <link href="{{url_for('static', filename='css/m-style.css')}}" rel="stylesheet">
         <!-- Your custom styles (optional) -->
-        <link href="{{url_for('static', filename='css/style.css')}}" rel="stylesheet">
+        <!-- <link href="{{url_for('static', filename='css/style.css')}}" rel="stylesheet"> -->
 
         <link href="{{url_for('static', filename='css/bootstrap.min.css')}}" rel="stylesheet"/>
         <!-- font-awesome-icons -->
-        <link href="{{url_for('static', filename='css/font-awesome.css')}}" rel="stylesheet">
+        <!-- <link href="{{url_for('static', filename='css/font-awesome.css')}}" rel="stylesheet"> -->
         <!-- <link rel="icon" href="../../favicon.ico"> -->
         <link href="{{url_for('static', filename='css/icofont.css')}}" rel="stylesheet">
         {% block link %}{% endblock %}
@@ -57,7 +57,7 @@
                         <li class="nav-item"><a class="nav-link" href="/history">History</a></li>
                     </ul>
                     <ul class="navbar-nav ml-auto mt-2">
-                        <li class="nav-item"><a class="nav-link" href="/logout">Log Out</a></li>
+                        <li class="nav-item"><a class="nav-link text-danger bg-light" href="/logout"><i class="icofont icofont-ui-power"></i></a></li>
                     </ul>
                 {% else %}
                     <ul class="navbar-nav ml-auto mt-2">
