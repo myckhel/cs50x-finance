@@ -30,7 +30,12 @@
           <div class="form-group">
             <h3>Sell Stock(s)</h3>
             <div class="input-inline">
-              <input type="text" name="symbol" value="" placeholder="Enter Stock Symbol" required>
+              <select required style="outline:none;" class="selectpicker" name="symbol">
+                <option selected disabled value="">choose Stock Symbol</option>
+                {% for stock in data['owned']: %}
+                <option value="{{stock.stock}}">{{stock.stock}} - {{stock.shares}}</option>
+                {% endfor %}
+              </select>
               <input type="number" name="shares" min="1" value="" placeholder="Number of Shares" required>
               <button class="btn btn-success" type="submit" name="sell"><i class="icofont icofont-deal"></i> Sell</button>
             </div>
