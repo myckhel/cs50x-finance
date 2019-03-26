@@ -18,17 +18,19 @@
             <th><i class="icofont icofont-money-bag"></i> Current Price</th>
             <th><i class="icofont icofont-money-bag"></i> Bought Price</th>
             <th><i class="icofont icofont-deal"></i> Type</th>
+            <th><i class="icofont icofont-ui-calendar"></i> Date</th>
           </tr>
         </thead>
         <tbody>
           {% for stock in data['stocks']: %}
           <tr>
-            <td>1</td>
+            <td>{{loop.index}}</td>
             <td>{{stock.stock}}</td>
             <td>{{stock.shares}}</td>
             <td>{{stock.curPrice}}</td>
             <td>{{stock.price}}</td>
             <td class="text-warning">{{stock.type}}</td>
+            <td>{{stock.date}}</td>
           </tr>
           {% endfor %}
         </tbody>

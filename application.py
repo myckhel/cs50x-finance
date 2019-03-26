@@ -42,6 +42,19 @@ def index():
 
     return render_template("index.html", data = data)
 
+
+@app.route("/addcash", methods=["POST"])
+@login_required
+def addcash():
+    amount = int(request.form.get('amount'))
+    if not amount or amount < 1:
+        return jsonify({'status': False, 'reason': 'Valid amount required'})
+
+    updateCash(amount)
+    storeTxn(amount = amount, type = 'funded')
+    return jsonify({'status': True, 'reason': 'Amount added to cash'})
+
+
 @app.route("/buy", methods=["GET", "POST"])
 @login_required
 def buy():
@@ -52,8 +65,7 @@ def buy():
 
         # validate input
         if not validate(symbol, shares):
-            result['reason'] = "You must provide Shares & Symbol or Shares must be positive"
-            return render_template("buy.html", result = result)
+            return apology("You must provide Shares & Symbol or Shares must be positive")
 
         quote = lookup(symbol)
         user_id = session["user_id"]
@@ -62,18 +74,18 @@ def buy():
             balance = db.execute("SELECT cash FROM users where id = :user_id", user_id = user_id)[0]['cash']
             amount = quote['price'] * int(shares)
             if amount > balance:
-                result['reason'] = "Insufficient funds to buy stock(s)"
+                return apology("Insufficient funds to buy stock(s)")
             else:
                 # add to users portfolio
                 modStock(symbol, shares)
                 # add to transactions
-                storeTxn(amount, symbol, shares, 'bought')
+                storeTxn(amount, 'bought', symbol, shares)
                 updateCash(-amount)
                 # result = { 'status' : True, 'reason' : "Stock bought successfully" }
                 return redirect("/")
         else:
-            result['reason'] = "Stock not found"
-        return render_template("buy.html", result = result)
+            apology("Stock not found")
+        return apology(result)
 
     """Buy shares of stock"""
     return render_template("buy.html")
@@ -97,7 +109,7 @@ def sell():
         ownedShares = db.execute("SELECT SUM(shares) as shares FROM users_stocks WHERE shares > 0 AND user_id = :user_id AND stock = :symbol GROUP BY stock", user_id = user_id, symbol = symbol)
         if not ownedShares:
             result['reason'] = "You do not own the selected stock"
-            return render_template("sell.html", result = result, data = data)
+            return apology("You do not own the selected stock", code=400)
         elif not ownedShares[0]['shares'] >= shares:
             result['reason'] = "You do not have enough shares of the selected stock"
             return render_template("sell.html", result = result, data = data)
@@ -107,7 +119,7 @@ def sell():
             amount = quote['price'] * shares
             modStock(symbol, -shares)
             # update user cash
-            storeTxn(amount, symbol, shares, 'sold')
+            storeTxn(amount, 'sold', symbol, shares)
             updateCash(amount)
     data = getStocks()
     return render_template("sell.html", data = data)
@@ -175,6 +187,10 @@ def quote():
     if request.method == 'POST':
         symbol = request.form.get('symbol')
         quote = lookup(symbol)
+
+        if not quote:
+            return apology("Stock not found")
+
         return render_template('quoted.html', quote = quote)
 
     """Get stock quote."""
@@ -191,6 +207,10 @@ def register():
         email = request.form.get('email')
         password = generate_password_hash(request.form.get('password'))
         status = True
+        # check password confirmation
+        if not request.form.get('password') == request.form.get('c-password'):
+            status = False
+            text = "Password confirmation not match"
         # check unique email
         exists_mail = db.execute("SELECT email FROM users where email = :email", email = email)
         if exists_mail:
@@ -211,9 +231,11 @@ def register():
 
             # Redirect user to home page
             return redirect("/")
-        return render_template('register.html', status = status, text = text)
+        return apology(text)
+        # return render_template('register.html', status = status, text = text)
     else:
         return render_template('register.html')
+
 
 def errorhandler(e):
     """Handle error"""
@@ -221,5 +243,5 @@ def errorhandler(e):
 
 
 # listen for errors
-# for code in default_exceptions:
-#     app.errorhandler(code)(errorhandler)
+for code in default_exceptions:
+    app.errorhandler(code)(errorhandler)

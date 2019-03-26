@@ -5,11 +5,8 @@
 {% endblock %}
 
 {% block main %}
-<style media="screen">
-
-</style>
 <div class="row" >
-  <div id="quote-div" class="col-md-6 col-md-offset-3 border border-danger bg-warning" align="center">
+  <div id="quote-div" class="col-md-6 to-center border border-danger bg-warning" align="center">
     <div class="page-header">
       <h1>Look Up Stock</h1>
     </div>
@@ -17,7 +14,7 @@
       <div class="form-group" >
         <div class="input-inline">
           <input required name="symbol" type="text" placeholder="Enter quote symbol" class="form-control" />
-          <input id="find" type="submit" value="Look up"  class="btn btn-primary form-control"/>
+          <button id="find" type="submit" class="btn btn-primary form-control"><i class="icofont icofont-ui-search"></i> Look up</button>
         </div>
       </div>
     </form>

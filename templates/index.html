@@ -17,6 +17,9 @@
     <div class="row">
       <div class="col-2 card bg-primary" id="balance"></div>
       <div class="col-2 card bg-info pull-right" id="Tbalance"></div>
+      <div class="col-2" id="">
+        <h6 class="to-center btn btn-success add-cash img-circle">Add cash<br><i class="icofont icofont-ui-add"></i></h6>
+      </div>
     </div>
   </div>
 
@@ -33,20 +36,29 @@
             <th><i class="icofont icofont-deal"></i> Shares</th>
             <th><i class="icofont icofont-money-bag"></i> Current Price</th>
             <th><i class="icofont icofont-money-bag"></i> Total Price</th>
+            <th><i class="icofont icofont-cart-alt"></i> Action</th>
           </tr>
         </thead>
         <tbody>
           {% for stock in data['owned']: %}
           <tr>
-            <td>1</td>
+            <td>{{loop.index}}</td>
             <td>{{stock.stock}}</td>
             <td>{{stock.shares}}</td>
             <td>{{stock.curPrice}}</td>
             <td class="text-warning">{{stock.curPrice * stock.shares}}</td>
+            <td>
+              <button class="buy btn btn-success" onclick="deal('{{stock.stock}}', 'buy')" type="button" name="button"><i class="icofont icofont-cart-alt"></i> Buy</button>
+              <button class="btn btn-warning" onclick="deal('{{stock.stock}}', 'sell')" type="button" name="button"><i class="icofont icofont-deal"></i> Sell</button>
+            </td>
           </tr>
           {% endfor %}
         </tbody>
       </table>
+      <form action="" id="empty-form" method="post">
+        <input id="shares" type="number" hidden name="shares" value="">
+        <input id="symbol" type="text" hidden name="symbol" value="">
+      </form>
     </div>
   </div>
 
@@ -64,17 +76,19 @@
             <th><i class="icofont icofont-money-bag"></i> Current Price</th>
             <th><i class="icofont icofont-money-bag"></i> Bought Price</th>
             <th><i class="icofont icofont-deal"></i> Type</th>
+            <th><i class="icofont icofont-ui-calendar"></i> Date</th>
           </tr>
         </thead>
         <tbody>
           {% for stock in data['stocks']: %}
           <tr>
-            <td>1</td>
+            <td>{{loop.index}}</td>
             <td>{{stock.stock}}</td>
             <td>{{stock.shares}}</td>
             <td>{{stock.curPrice}}</td>
             <td>{{stock.price}}</td>
             <td class="text-warning">{{stock.type}}</td>
+            <td>{{stock.date}}</td>
           </tr>
           {% endfor %}
         </tbody>
@@ -87,10 +101,38 @@
 {% block js %}
 <script type="text/javascript" src="{{url_for('static', filename='js/addons/datatables.min.js')}}"></script>
 <script type="text/javascript">
+  const deal = (symbol, type) => {
+    shares = get_int('Number of shares')
+    if(!shares) return
+
+    $('#shares').val(shares)
+    $('#symbol').val(symbol)
+    $('#empty-form').attr('action', type === 'buy' ? "{{url_for('buy')}}" : "{{url_for('sell')}}")
+    $('#empty-form').submit()
+  }
+
+  const get_int = (instruct) => {
+    num = parseInt(prompt(instruct || 'Enter Number'))
+    if(!num || !num > 0){
+      alert("Please enter a valid number > 0 and try again")
+      return
+    }
+    return num
+  }
+
+  const addcash = () => {
+    amount = get_int('Enter Amount')
+    if (!amount) return
+    $.post({url: "{{url_for('addcash')}}", data: {amount}})
+    .done((res) => window.location.reload())
+    .fail((e) => console.log(e))
+  }
+
   $(document).ready(() => {
-    const balance = (balance, txt) => (`<h3>${txt}: <span class='text-warning'>${balance}</span></h3>`)
     $('#balance').html(balance("{{data['balance']}}", '<i class="icofont icofont-bank-alt"></i>'))
-    $('#Tbalance').html(balance("{{data['stockBalance']}}", '<i class="icofont icofont-money-bag"></i> '))
+    $('#Tbalance').html(balance("{{data['stockBalance'] + data['balance']}}", '<i class="icofont icofont-money-bag"></i> '))
+
+    $('.add-cash').click(() => addcash())
 
     var stocks = $('#stocks').DataTable()
     var user_stocks = $('#user-stocks').DataTable()

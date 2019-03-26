@@ -9,3 +9,5 @@ const toggleAble = (element, bool, text) => {
     $this.html($this.data('original-text'))
   }
 }
+
+const balance = (balance, txt) => (`<h3>${txt}<br> <span class='text-warning'>${balance}</span></h3>`)

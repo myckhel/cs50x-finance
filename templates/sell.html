@@ -58,7 +58,7 @@
         <tbody>
           {% for stock in data['owned']: %}
           <tr>
-            <td>1</td>
+            <td>{{loop.index}}</td>
             <td>{{stock.stock}}</td>
             <td>{{stock.shares}}</td>
             <td>{{stock.curPrice}}</td>
@@ -76,7 +76,6 @@
 <script type="text/javascript" src="{{url_for('static', filename='js/addons/datatables.min.js')}}"></script>
 <script type="text/javascript">
 $(document).ready(() => {
-  const balance = (balance, txt) => (`<h3>${txt}: <span class='text-warning'>${balance}</span></h3>`)
   $('#balance').html(balance("{{data['balance']}}", '<i class="icofont icofont-bank-alt"></i>'))
   $('#Tbalance').html(balance("{{data['stockBalance'] + data['balance']}}", '<i class="icofont icofont-money-bag"></i> '))
 

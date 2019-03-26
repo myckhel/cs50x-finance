@@ -1,5 +1,6 @@
 import requests
 import urllib.parse
+import datetime
 
 from flask import redirect, render_template, request, session
 from functools import wraps
@@ -69,10 +70,9 @@ def getStocks():
     data = {
         'balance': db.execute("SELECT cash FROM users where id = :user_id", user_id = user_id)[0]['cash'],
         'owned': stocksCurPrice(stocks),
-
     }
     data['stockBalance'] = TotalBalance(data['owned'])
-    stocks = db.execute("SELECT stock, shares, price, type FROM transactions where user_id = :user_id", user_id = user_id)
+    stocks = db.execute("SELECT * FROM transactions where user_id = :user_id ORDER BY date DESC", user_id = user_id)
     data['stocks'] = stocksCurPrice(stocks)
     return data
 
@@ -98,9 +98,9 @@ def ownStock(symbol):
     return db.execute("SELECT * FROM users_stocks WHERE user_id = :user_id AND stock = :symbol AND shares > 0",
     user_id = user_id, symbol = symbol)
 
-def storeTxn(amount, symbol, shares, type):
+def storeTxn(amount, type, symbol = None, shares = None):
     user_id = session['user_id']
-    date = "2019-03-21"
+    date = datetime.datetime.now()
     db.execute("INSERT INTO transactions (user_id, stock, price, shares, type, date) VALUES (:user_id, :symbol, :amount, :shares, :type, :date)"
     , amount = amount, symbol = symbol, date = date, user_id = user_id, shares = shares, type = type)
 

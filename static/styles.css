@@ -48,6 +48,13 @@ main img
 
 .nav-link {
   color: white;
+  background-color: yellow;
+  border-right: 2pt solid black;
+}
+
+.nav-link:hover {
+  color: white;
+  background-color: blue;
 }
 
 .ht-min {
