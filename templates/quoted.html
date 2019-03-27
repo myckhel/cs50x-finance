@@ -15,7 +15,7 @@
 {% block js %}
 <script type="text/javascript">
   $(document).ready(() => {
-    displayQuote("{{quote.price}}", "{{quote.symbol}}")
+    displayQuote("{{usd(quote.price)}}", "{{quote.symbol}}")
   })
   const displayQuote = (price, symbol) => {
     template = quoteTemplate(price, symbol)

@@ -64,3 +64,12 @@ main img
 .to-center {
   margin: 20%;
 }
+
+/* m */
+.table > thead > tr > th {
+    border-bottom-color: #ccc;
+}
+
+th, td {
+    white-space: nowrap;
+}

@@ -50,7 +50,7 @@
       <h3>User Stock(s)</h3>
     </div>
     <div class="table-responsive">
-      <table id="stocks" class="table table-hover table-bordered nowrap">
+      <table id="stocks" class="table dataTable table-hover table-bordered nowrap">
         <thead class="bg-dark">
           <tr>
             <th><i class="icofont icofont-chart-flow-alt-2"></i></th>
@@ -66,8 +66,8 @@
             <td>{{loop.index}}</td>
             <td>{{stock.stock}}</td>
             <td>{{stock.shares}}</td>
-            <td>{{stock.curPrice}}</td>
-            <td class="text-warning">{{stock.curPrice * stock.shares}}</td>
+            <td>{{usd(stock.curPrice)}}</td>
+            <td class="text-warning">{{usd(stock.curPrice * stock.shares)}}</td>
           </tr>
           {% endfor %}
         </tbody>

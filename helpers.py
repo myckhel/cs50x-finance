@@ -42,19 +42,19 @@ def lookup(symbol):
     """Look up quote for symbol."""
 
     # Contact API
-    # try:
-    #     response = requests.get(f"https://api.iextrading.com/1.0/stock/{urllib.parse.quote_plus(symbol)}/quote")
-    #     response.raise_for_status()
-    # except requests.RequestException:
-    #     return None
+    try:
+        response = requests.get(f"https://api.iextrading.com/1.0/stock/{urllib.parse.quote_plus(symbol)}/quote")
+        response.raise_for_status()
+    except requests.RequestException:
+        return None
 
     # Parse response
     try:
-        # quote = response.json()
+        quote = response.json()
         return {
-            "name": "JET",#quote["companyName"],
-            "price": 310.01,#float(quote["latestPrice"]),
-            "symbol": "SSS4"#quote["symbol"]
+            "name": quote["companyName"],#"JET",
+            "price": float(quote["latestPrice"]),#310.01,
+            "symbol": quote["symbol"] #"SSS4"
         }
     except (KeyError, TypeError, ValueError):
         return None
@@ -110,7 +110,10 @@ def updateCash(amount):
 
 def stocksCurPrice(stocks):
     for stock in stocks:
-        stock['curPrice'] = lookup(stock['stock'])['price']
+        if stock['stock']:
+            stock['curPrice'] = lookup(stock['stock'])['price']
+        else:
+            stock['curPrice'] = 0
     return stocks
 
 def validate(symbol, shares):

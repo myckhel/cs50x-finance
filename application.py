@@ -23,7 +23,8 @@ def after_request(response):
     return response
 
 # Custom filter
-app.jinja_env.filters["usd"] = usd
+# app.jinja_env.filters["usd"] = usd
+app.jinja_env.globals.update(usd=usd)
 
 # Configure session to use filesystem (instead of signed cookies)
 app.config["SESSION_FILE_DIR"] = mkdtemp()
@@ -201,21 +202,13 @@ def quote():
 def register():
     if request.method == 'POST':
         """Register user"""
-        fname = request.form.get('fname')
-        lname = request.form.get('lname')
         uname = request.form.get('username')
-        email = request.form.get('email')
         password = generate_password_hash(request.form.get('password'))
         status = True
         # check password confirmation
         if not request.form.get('password') == request.form.get('c-password'):
             status = False
             text = "Password confirmation not match"
-        # check unique email
-        exists_mail = db.execute("SELECT email FROM users where email = :email", email = email)
-        if exists_mail:
-            status = False
-            text = "Email exists with another user"
         # check unique username
         exists_username= db.execute("SELECT username FROM users where username = :username", username = uname)
         if exists_username:
@@ -223,11 +216,11 @@ def register():
             text = "Username already taken by another user"
         if status:
             # register
-            register = db.execute("INSERT INTO users (firstname, lastname, username, email, hash) VALUES(:firstname, :lastname, :username, :email, :hash)",
-            firstname = fname, lastname = lname, username = uname, email = email, hash = password)
+            register = db.execute("INSERT INTO users (username, hash) VALUES(:username, :hash)",
+            username = uname, hash = password)
             text = "Registration Was Successful"
             # Remember which user has logged in
-            session["user_id"] = rows[0]["id"]
+            session["user_id"] = register
 
             # Redirect user to home page
             return redirect("/")
@@ -243,5 +236,5 @@ def errorhandler(e):
 
 
 # listen for errors
-for code in default_exceptions:
-    app.errorhandler(code)(errorhandler)
+# for code in default_exceptions:
+#     app.errorhandler(code)(errorhandler)

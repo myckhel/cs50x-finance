@@ -45,8 +45,8 @@
             <td>{{loop.index}}</td>
             <td>{{stock.stock}}</td>
             <td>{{stock.shares}}</td>
-            <td>{{stock.curPrice}}</td>
-            <td class="text-warning">{{stock.curPrice * stock.shares}}</td>
+            <td>{{usd(stock.curPrice)}}</td>
+            <td class="text-warning">{{usd(stock.curPrice * stock.shares)}}</td>
             <td>
               <button class="buy btn btn-success" onclick="deal('{{stock.stock}}', 'buy')" type="button" name="button"><i class="icofont icofont-cart-alt"></i> Buy</button>
               <button class="btn btn-warning" onclick="deal('{{stock.stock}}', 'sell')" type="button" name="button"><i class="icofont icofont-deal"></i> Sell</button>
@@ -74,7 +74,7 @@
             <th><i class="icofont icofont-coins"></i> Symbol</th>
             <th><i class="icofont icofont-deal"></i> Shares</th>
             <th><i class="icofont icofont-money-bag"></i> Current Price</th>
-            <th><i class="icofont icofont-money-bag"></i> Bought Price</th>
+            <th><i class="icofont icofont-money-bag"></i> Txn Price</th>
             <th><i class="icofont icofont-deal"></i> Type</th>
             <th><i class="icofont icofont-ui-calendar"></i> Date</th>
           </tr>
@@ -85,8 +85,8 @@
             <td>{{loop.index}}</td>
             <td>{{stock.stock}}</td>
             <td>{{stock.shares}}</td>
-            <td>{{stock.curPrice}}</td>
-            <td>{{stock.price}}</td>
+            <td>{{usd(stock.curPrice)}}</td>
+            <td>{{usd(stock.price)}}</td>
             <td class="text-warning">{{stock.type}}</td>
             <td>{{stock.date}}</td>
           </tr>
